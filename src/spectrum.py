@@ -3,6 +3,7 @@
 from enum import IntEnum
 from topology_constants import DISTANCES
 from logger import logger
+from typing import NamedTuple
 
 N_NODES = 28  # Number of nodes
 N_SLOTS = 320  # Number of slots for each link
@@ -16,6 +17,27 @@ class SlotState(IntEnum):
     FREE = 0
     OCCUPIED = 1
 
+
+class Modulation(NamedTuple):
+    """Typed named tuple for modulation entries.
+
+    This is a subclass of tuple so index-based access still works
+    (e.g. MODULATIONS[0][1] == 50) while also providing attribute access
+    (MODULATIONS[0].max_bitrate).
+    """
+
+    name: str
+    max_bitrate: int
+    max_distance: int
+
+
+# Format: (name, max_bitrate, max_distance)
+MODULATIONS: list[Modulation] = [
+    Modulation("BPSK", 50, 6300),
+    Modulation("QPSK", 100, 3500),
+    Modulation("16QAM", 150, 1200),
+    Modulation("32QAM", 200, 600),
+]
 
 def _get_spectrum_state_array() -> list[list[list[int] | None]]:
     """Generate initial spectrum state representation array

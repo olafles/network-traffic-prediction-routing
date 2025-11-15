@@ -14,7 +14,6 @@ Most likely it might be a good idea to treat *path* as an array of nodes **OR** 
  ```
  This could be useful for later encapsulation in ***Connection***(?) class to keep track of connections over time units and clear slots after required time for each connection has passed
 
- ### Djikstra -> FirstFit
+ ### Dijkstra -> FirstFit
 
- Implement djikstra, then use spectrummanager's "check spectrum continuity" to decide whether request can be accepted or has to be rejected. If there is no free, continous spectrum on the shortest path the request should be rejected.
-
+ ~~Implement dijkstra~~ **DONE**, then use spectrummanager's "check spectrum continuity" to decide whether request can be accepted or has to be rejected. If there is no free, continous spectrum on the shortest path the request should be rejected.

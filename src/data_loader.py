@@ -75,6 +75,13 @@ class DataLoader:
         logger.info("Validation complete in %.3f seconds", _time_taken)
         logger.info("Number of requests %s", counter)
 
+        data = 0
+        logger.debug("Checking total data")
+        for i in range(N_ITERATIONS):
+            for rq in self._traffic[i]:
+                data += rq.size_gbps * rq.duration
+        logger.debug("Total data size: %s", data)
+
     def export_traffic(self) -> list[list[Request]]:
         """Returns the loaded traffic data and clears it from the
         object to free memory by allowing garbage collection. After

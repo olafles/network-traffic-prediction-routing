@@ -3,7 +3,7 @@
 import logging
 
 logging.basicConfig(
-    level=logging.INFO,  # (DEBUG, INFO, WARNING, ERROR, CRITICAL)
+    level=logging.DEBUG,  # (DEBUG, INFO, WARNING, ERROR, CRITICAL)
     format="%(asctime)s %(levelname)s %(filename)s: %(message)s",
     datefmt="%H:%M:%S",
     handlers=[
