@@ -41,7 +41,14 @@ class DataLoader:
     def _read_single_file(self, file_index: int) -> None:
         with (self._data_dir / f"{file_index}.txt").open("r") as file:
             for line in file:
-                start_node, dest_node, bw, duration = map(float, line.split())
+                parts = line.split()
+                if not parts:
+                    continue
+                start_node = int(float(parts[0]))
+                dest_node = int(float(parts[1]))
+                bw = float(parts[2])
+                duration = int(float(parts[3]))
+
                 req = Request(
                     start=start_node,
                     end=dest_node,
@@ -76,11 +83,11 @@ class DataLoader:
         logger.info("Number of requests %s", counter)
 
         data = 0
-        logger.debug("Checking total data")
+        logger.info("Checking total data")
         for i in range(N_ITERATIONS):
             for rq in self._traffic[i]:
                 data += rq.size_gbps * rq.duration
-        logger.debug("Total data size: %s", data)
+        logger.info("Total data size: %s", data)
 
     def export_traffic(self) -> list[list[Request]]:
         """Returns the loaded traffic data and clears it from the

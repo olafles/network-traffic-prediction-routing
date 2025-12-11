@@ -1,6 +1,14 @@
-"""Main file"""
+"""Main runner (small test harness).
 
-from data_loader import DataLoader
+Edit `SCENARIO` below to change the input folder used by the
+simulation. This keeps `main.py` minimal while allowing quick
+manual testing.
+"""
 
-d = DataLoader("70000_0")
-TRAFFIC = d.export_traffic()
+from simulator import run_simulation
+
+SCENARIO = "110000_0"
+
+
+if __name__ == "__main__":
+    run_simulation(SCENARIO)
