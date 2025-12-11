@@ -39,6 +39,7 @@ MODULATIONS: list[Modulation] = [
     Modulation("32QAM", 200, 600),
 ]
 
+
 def _get_spectrum_state_array() -> list[list[list[int] | None]]:
     """Generate initial spectrum state representation array
 
@@ -69,3 +70,83 @@ def _get_spectrum_state_array() -> list[list[list[int] | None]]:
 
         spectrum_state.append(row)
     return spectrum_state
+
+
+class Allocation(NamedTuple):
+    """Represents an allocation so it can be released later."""
+
+    id: int
+    path: list[int]
+    start_slot: int
+    n_slots: int
+
+
+class SpectrumManager:
+    """Manage spectrum state: find first-fit, reserve and release allocations."""
+
+    def __init__(self) -> None:
+        self._state = _get_spectrum_state_array()
+        self._next_id = 1
+
+    def find_first_fit(self, path: list[int], n_slots: int) -> int | None:
+        """Return start slot index for first-fit or None if not found."""
+        if n_slots <= 0 or n_slots > N_SLOTS:
+            return None
+
+        links = []
+        for i in range(len(path) - 1):
+            u, v = path[i], path[i + 1]
+            link = self._state[u][v]
+            if link is None:
+                return None
+            links.append(link)
+
+        last_start = N_SLOTS - n_slots
+        for start in range(0, last_start + 1):
+            ok = True
+            for link in links:
+                for s in range(start, start + n_slots):
+                    if link[s] != SlotState.FREE:
+                        ok = False
+                        break
+                if not ok:
+                    break
+            if ok:
+                return start
+
+        return None
+
+    def reserve_slots(
+        self, path: list[int], start_slot: int, n_slots: int
+    ) -> Allocation:
+        """Reserve slots across all links in path and return Allocation."""
+        alloc_id = self._next_id
+        self._next_id += 1
+
+        for i in range(len(path) - 1):
+            u, v = path[i], path[i + 1]
+            link = self._state[u][v]
+            for s in range(start_slot, start_slot + n_slots):
+                link[s] = SlotState.OCCUPIED
+
+        return Allocation(alloc_id, path, start_slot, n_slots)
+
+    def release(self, allocation: Allocation) -> None:
+        """Release previously reserved allocation."""
+        for i in range(len(allocation.path) - 1):
+            u, v = allocation.path[i], allocation.path[i + 1]
+            link = self._state[u][v]
+            if link is None:
+                logger.error("Tried to release on non-existent link %s->%s", u, v)
+                continue
+            for s in range(
+                allocation.start_slot, allocation.start_slot + allocation.n_slots
+            ):
+                link[s] = SlotState.FREE
+
+    def debug_free_slots_on_link(self, u: int, v: int) -> int:
+        """Return count of free slots on a link (debug helper)."""
+        link = self._state[u][v]
+        if link is None:
+            return 0
+        return sum(1 for s in link if s == SlotState.FREE)

@@ -106,6 +106,6 @@ class TopologyData:
             distance = cls.get_distance(path[i], path[i + 1])
             if distance == 0:
                 logger.critical("Path contains 0km distance")
-            values.append()
+            values.append(distance)
 
-        return max(values)
+        return max(values) if values else 0
