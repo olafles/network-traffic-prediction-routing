@@ -6,7 +6,7 @@ from pathlib import Path
 from request import Request, validate_request
 from logger import logger
 
-N_ITERATIONS = 1000
+N_ITERATIONS = 1000  # There are 1000 time slots in each scenario
 
 
 class DataLoader:

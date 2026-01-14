@@ -109,3 +109,25 @@ class TopologyData:
             values.append(distance)
 
         return max(values) if values else 0
+
+    @classmethod
+    def get_path_total_distance(cls, path: list[int]) -> int:
+        """Returns total distance of the path (sum of consecutive link distances).
+
+        The project specification requires choosing modulation according to the
+        full path length (total distance), not the longest single link. This
+        helper computes that sum so the simulator can select an appropriate
+        modulation.
+        """
+        total = 0
+        for i in range(len(path) - 1):
+            distance = cls.get_distance(path[i], path[i + 1])
+            if distance == 0:
+                logger.critical(
+                    "Path contains 0km distance between %s->%s",
+                    path[i],
+                    path[i + 1],
+                )
+            total += distance
+
+        return total

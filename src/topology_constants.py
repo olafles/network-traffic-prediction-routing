@@ -12,10 +12,8 @@ CITIES = [
     {"name": "Strasbourg", "country": "France"},  # 6
     {"name": "Hamburg", "country": "Germany"},  # 7
     {"name": "Frankfurt", "country": "Germany"},  # 8
-    {"name": "Milan", "country": "Germany"},  # 9
-    # ^^ Why is Milan in Germany??
-    {"name": "Munich", "country": "Italy"},  # 10
-    # ^^ Why is Munich in Italy??
+    {"name": "Milan", "country": "Italy"},  # 9
+    {"name": "Munich", "country": "Germany"},  # 10
     {"name": "Berlin", "country": "Germany"},  # 11
     {"name": "Rome", "country": "Italy"},  # 12
     {"name": "Zagreb", "country": "Croatioa"},  # 13
@@ -72,3 +70,7 @@ DISTANCES = [
     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 513, 574, 0]
 ]
 # fmt: on
+
+# NEIGHBOURS: adjacency lists for each node
+# neighbours[x] is a list of node indices adjacent to x (distance != 0)
+NEIGHBOURS = [[j for j, d in enumerate(row) if d != 0] for row in DISTANCES]
